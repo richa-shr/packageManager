@@ -15,7 +15,7 @@ export const createOtp=async(req,res)=>{
         }
     
         const otp = generateOtp();
-        otpStore.set(packageId, { otp, user });
+        otpStore.set(packageId, { otp });
          let contactNumber=String(user.contactNumber);
           contactNumber='+91'+contactNumber;
           //contactNumber=Number(contactNumber);
@@ -31,6 +31,7 @@ export const verifyOtp=async(req,res)=>{
         const { otp } = req.body;
     
         const storedOtp = otpStore.get(packageId);
+        console.log(otpStore)
         if (!storedOtp || storedOtp.otp !== otp) {
           return res.status(400).json({ message: 'Invalid OTP' });
         }

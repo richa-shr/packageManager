@@ -8,7 +8,7 @@ export const registerUser=async(req,res)=>{
         return res.status(400).json({msg:"User already exists"});
         const newUser=await User.create({name,email,password,enrollmentNumber,registrationNumber,contactNumber});
         newUser.save();
-        const token = jwt.sign({ email: newUser.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ email: newUser.email }, process.env.JWT_SECRET);
         return res.status(200).json({msg:"User created successfully",data:newUser});
     } catch (error) {
         console.log(error);
@@ -25,7 +25,7 @@ export const loginUser=async(req,res)=>{
         const isMatch = await user.matchPassword(password);
         if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
         res.json({ token });
     } catch (err) {
         console.error(err.message);   

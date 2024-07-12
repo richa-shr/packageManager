@@ -1,5 +1,6 @@
 import Package from '../model/package.model.js';
 import User from '../model/user.model.js';
+import moment from 'moment';
 export const newPackage=async(req,res)=>{
     const { studentName, registrationNumber, dateOfArrival } = req.body;
   try {
@@ -21,9 +22,18 @@ export const getAllpackage=async(req,res)=>{
 export const seeYourPackage=async(req,res)=>{
     try {
         const user=req.user;
+        //console.log(req.user);
      const registrationNumber=user.registrationNumber;
-     const yourPackages=Package.find({registrationNumber});
-     res.status(200).json({yourPackages});
+     console.log(registrationNumber)
+     const yourPackages=await Package.find({registrationNumber});
+     const formattedPackages = yourPackages.map(pkg => ({
+      ...pkg._doc,
+      dateOfArrival: moment(pkg.dateOfArrival).format('YYYY-MM-DD')
+  }));
+     if(!yourPackages)
+     return res.status(400).json({mag:"packages not found"})
+     console.log(yourPackages)
+     res.status(200).json({yourPackages:formattedPackages});
     } catch (error) {
         res.status(500).json({error:error.msg});
     }
